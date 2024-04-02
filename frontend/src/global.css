@@ -1,0 +1,52 @@
+*{
+    font-family: cursive;
+}
+.book_container{
+    display: flex;
+    border: solid grey 3px;
+    margin: 10px;
+    padding: 0;
+}
+
+.book_image{
+    width: 140px;
+    padding-right: 10px;
+}
+
+.book_text{
+    /* all the text about book */
+
+    margin-top: 0;
+    margin-right: 50px;
+}
+
+
+.description{
+    /* books description */
+    max-width:1000px;
+    max-height:150px
+}
+
+.search_tab{
+    /* container prieks book search inputs */
+    display: flex;
+    justify-content: center;
+}
+
+.book_search {
+    /* input fields for the book searching */
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.search_title{
+    font-family: cursive;
+    text-align: center;
+    margin: 0;
+}
+
+.remove_button{
+    height: 40px;
+    background-color: rgb(235, 101, 101);
+    border-color: red;
+}

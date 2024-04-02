@@ -4,6 +4,7 @@ import Login from './Login';
 import Guest from './Guest';
 import Admin from './Admin';
 import AddBook from './AddBook';
+import './global.css';
 
 function App() {
   return (

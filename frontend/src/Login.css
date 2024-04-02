@@ -1,0 +1,38 @@
+.login{
+    display: flex;
+    justify-content: center;
+}
+
+.login_container{
+    width: 400px;
+    height: 200px;
+    background-color: grey;
+    padding: 10px;
+    border-radius:15px;
+}
+
+.login_usernames{
+    border-style: solid;
+    border-color: navajowhite;
+    box-shadow: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 8px 8px 0px 0px;
+    border-radius: 8px 8px 0px 0px;
+    margin:0;
+}
+
+.login_passwords{
+    border-style: solid;
+    border-color: navajowhite;
+    box-shadow: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px 0px 8px 8px;
+    border-radius: 0px 0px 8px 8px;
+    margin:0;
+}
+
+.login_buttons{
+
+    margin: 5px;
+
+}

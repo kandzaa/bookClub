@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import './Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -7,58 +8,69 @@ function Login() {
   const history = useHistory();
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const error = 'Innvalid credentials!';
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (username === 'admin' && password === 'admin') {
-      history.push('/admin');
-    } else if (username === 'guest' && password === 'guest') {
-      history.push('/guest');
-    } else {
-      return ( 
-      <p>{error}</p>
-        )}
-  };
 
-  const handleSignup = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost/', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: newUsername, password: newPassword }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (data.success) {
-        alert('Signup successful');
-      } else {
-        alert('Signup failed');
-      }
+        const res = await fetch('http://localhost/login.php', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        if (data.error) {
+            console.error('Login error:', data.error);
+        } else {
+            console.log('Login successful');
+            if (data.is_admin) {
+                history.push('/admin');
+            } else {
+                history.push('/guest');
+            }
+        }
     } catch (error) {
-      console.error('Error during fetch:', error);
+        console.error('Error fetching data:', error);
     }
   };
+  
 
+
+  
+const handleSignup = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch('http://localhost/register.php', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({username: newUsername, password: newPassword})
+    });
+
+    const ret = await res.text( );
+  };
+  
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-        <button type="submit">Login</button>
+    <div className='login'>
+    <div className='login_container'>
+      <form onSubmit={handleLogin}>
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className='login_usernames'/><br/>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className='login_passwords'/>
+      <button type="submit" className='login_buttons'>Login</button>
+      </form>
+
+      <form onSubmit={handleSignup}>
+        <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="New Username" className='login_usernames'/><br/>
+        <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" className= 'login_passwords'/> 
+      <button type="submit" className='login_buttons'>Sign Up</button>
       </form>
       
-      <form onSubmit={handleSignup}>
-        <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="New Username" />
-        <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
-        <button type="submit">Sign Up</button>
-      </form>
- 
+      
+    </div>
     </div>
   );
 }

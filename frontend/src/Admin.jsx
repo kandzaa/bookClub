@@ -1,5 +1,4 @@
-import React from 'react';
-import {useState, useRef, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 
 function Admin() {
@@ -10,39 +9,60 @@ function Admin() {
   const history = useHistory();
   const inputRef = useRef();
 
-  const fetchData = () => {
-    fetch("http://localhost/", {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ title, author, year }),
-})
-.then(res => {
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
-  }
-  return res.json();
-})
-.then(data => {
-  setData(data);
-})
-.catch(error => {
-  console.error('Error:', error);
-});
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
+  const fetchData = () => {
+    fetch("http://localhost/books.php", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, author, year })
+    })
+    .then(response => response.json())
+    .then(data => {
+      setData(data); 
+    })
+    .catch(error => console.error('Error fetching books:', error)); 
+  };
+  
   useEffect(fetchData, [title, author, year]);
 
+  const removeBook = (bookId) => {
+    fetch(`http://localhost/books.php?id=${bookId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchData();
+      } else {
+        console.error('Failed to remove book');
+      }
+    })
+    .catch(error => console.error('Error removing book:', error));
+  };
+  
+  
+  
+
   const myBooks = data.map((book, index) => (
-    <div key={index}>
-      <h2>{book.Nosaukums}</h2>
-      <p>{book.Autors}</p>
-      <p>{book.Gads}</p>
-      <p>{book.Pieejamība}</p>
-      <p>{book.Apraksts}</p>
-      <br/><br/>
-    </div>
+    <div key={index} className='book_container'>
+      <img src={book.image} className='book_image' alt={`Cover of ${book.title}`} />
+      <div className='book_text'>
+        <h2>{book.title}</h2>
+        <p>{book.author}</p>
+        <p>{book.release_year}</p>      
+        <p>{book.availability ? "Available" : "Not Available"}</p>
+        <button className='remove_button' onClick={() => removeBook(book.id)}>remove</button>
+      </div>
+      <div className='book_text'>
+        <h3>Description:</h3>
+        <p className='description'>{book.DESCRIPTION}</p>
+      </div>
+      </div>
   ));
 
   function limitInputLength(element, maxLength) {
@@ -53,17 +73,22 @@ function Admin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-      history.push('/addbook');
-    }
+    history.push('/addbook');
+  };
 
   return (
     <>
-      <input placeholder='Nosaukums' value={title} onChange={e => setTitle(e.target.value)} />
-      <input placeholder='Autors' value={author} onChange={e => setAuthor(e.target.value)} />
-      <input type='number' placeholder='Gads' value={year} onChange={e => setYear(e.target.value)} ref={inputRef} onInput={() => limitInputLength(inputRef.current, 4)} />
-      <button onClick={fetchData}>Search</button>
-      <button className='addBook'onClick={handleSubmit}>Add a book</button>
-      <div>{myBooks}</div>
+      <div>
+        <h2 className='search_title'>Search a book</h2>
+        <div className='search_tab'>
+          <input placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} className='book_search'/>
+          <input placeholder='Author' value={author} onChange={e => setAuthor(e.target.value)} className='book_search'/>
+          <input type='number' placeholder='Year' value={year} onChange={e => setYear(e.target.value)} ref={inputRef} onInput={() => limitInputLength(inputRef.current, 4)} className='book_search'/>
+          <button className='addBook' onClick={handleSubmit}>Add a book</button>
+        </div>
+      </div>
+      
+      <div>{myBooks.length > 0 ? myBooks : "No books available"}</div>
     </>
   )
 }

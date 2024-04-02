@@ -2,19 +2,20 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 
 function AddBook() {
-    const [Nosaukums, setNosaukums] = useState('');
-    const [Autors, setAutors] = useState('');
-    const [Gads, setGads] = useState(0);
-    const [Apraksts, setApraksts] = useState('');
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [year, setYear] = useState('');
+    const [DESCRIPTION, setDESCRIPTION] = useState('');
+    const [image, setImage] = useState('');
     const inputRef = useRef();
 
     const addBook = () => {
-        console.log(Autors);
-        axios.post('http://localhost/', {
-            title: Nosaukums,
-            author: Autors,
-            year: Gads,
-            description: Apraksts
+        axios.post('http://localhost/addBook.php', {
+            title: title,
+            author: author,
+            year: year,
+            DESCRIPTION: DESCRIPTION,
+            image: image
         })
         .then(response => {
             console.log(response);
@@ -26,17 +27,17 @@ function AddBook() {
 
     function limitInputLength(element, maxLength) {
         if (element.value.length > maxLength) {
-          element.value = element.value.slice(0, maxLength);
+            element.value = element.value.slice(0, maxLength);
         }
-      }
-
+    }
 
     return (
         <>
-            <input placeholder="Nosaukums" onChange={e => setNosaukums(e.target.value)} /><br/>
-            <input placeholder="Autors" onChange={e => setAutors(e.target.value)} /><br/>
-            <input placeholder="Gads" onChange={e => setGads(e.target.value)} ref={inputRef} onInput={() => limitInputLength(inputRef.current, 4)}/><br/>
-            <textarea placeholder="Apraksts" onChange={e => setApraksts(e.target.value)} /><br/>
+            <input placeholder="Nosaukums" value={title} onChange={e => setTitle(e.target.value)} /><br/>
+            <input placeholder="Autors" value={author} onChange={e => setAuthor(e.target.value)} /><br/>
+            <input type="number" placeholder="Gads" value={year} onChange={e => setYear(e.target.value)} ref={inputRef} onInput={() => limitInputLength(inputRef.current, 4)} /><br/>
+            <input placeholder='Apraksts' value={DESCRIPTION} onChange={e => setDESCRIPTION(e.target.value)}/><br/>
+            <input placeholder='image-link' value={image} onChange={e => setImage(e.target.value)}/><br/>
             <button onClick={addBook}>Add a book</button>
         </>
     )
